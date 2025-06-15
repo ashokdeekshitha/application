@@ -1,20 +1,17 @@
 // middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { authMiddleware } from "@clerk/nextjs";
 
-// Runs for every request to these paths
+export default authMiddleware({
+  // ✅ Public routes that don't require sign-in
+  publicRoutes: ["/", "/api/webhook/clerk"],
+
+  // ✅ Ignored routes (middleware won't run at all)
+  ignoredRoutes: ["/api/webhook/clerk"],
+});
+
 export const config = {
-  matcher: ['/dashboard/:path*', '/profile/:path*'], // Adjust as needed
+  matcher: [
+    // Match all routes except static files and _next
+    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+  ],
 };
-
-export function middleware(request: NextRequest) {
-  // Example: log path
-  console.log('Middleware running at path:', request.nextUrl.pathname);
-
-  // Optional: redirect example
-  // if (!request.nextUrl.pathname.startsWith('/api')) {
-  //   return NextResponse.redirect(new URL('/login', request.url));
-  // }
-
-  return NextResponse.next(); // Always required to continue
-}
