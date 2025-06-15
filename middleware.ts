@@ -1,16 +1,20 @@
-// Resource: https://clerk.com/docs/nextjs/middleware#auth-middleware
-// Copy the middleware code as it is from the above resource
+// middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-import { authMiddleware } from "@clerk/nextjs";
-
-export default authMiddleware({
-  // An array of public routes that don't require authentication.
-  publicRoutes: ["/api/webhook/clerk"],
-
-  // An array of routes to be ignored by the authentication middleware.
-  ignoredRoutes: ["/api/webhook/clerk"],
-});
-
+// Runs for every request to these paths
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: ['/dashboard/:path*', '/profile/:path*'], // Adjust as needed
 };
+
+export function middleware(request: NextRequest) {
+  // Example: log path
+  console.log('Middleware running at path:', request.nextUrl.pathname);
+
+  // Optional: redirect example
+  // if (!request.nextUrl.pathname.startsWith('/api')) {
+  //   return NextResponse.redirect(new URL('/login', request.url));
+  // }
+
+  return NextResponse.next(); // Always required to continue
+}
